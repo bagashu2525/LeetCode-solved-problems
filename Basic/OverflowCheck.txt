@@ -1,0 +1,121 @@
+Overflow checking is an essential concept when working with integer arithmetic, especially in languages like Java, where integers have fixed sizes (e.g., `int` in Java is a 32-bit signed integer with a range of \(-2^{31}\) to \(2^{31} - 1\)). Here’s a tutorial on how to perform overflow checks effectively:
+
+### 1. **Understanding Overflow in Integer Arithmetic**
+
+Overflow occurs when an arithmetic operation exceeds the maximum or minimum value that a data type can store.
+
+For a 32-bit signed integer (`int`), the range is:
+- **Minimum value**: \(-2^{31}\) or \(-2,147,483,648\)
+- **Maximum value**: \(2^{31} - 1\) or \(2,147,483,647\)
+
+If an operation produces a result beyond this range, it "wraps around," causing an overflow:
+- For example, `2,147,483,647 + 1` wraps around to `-2,147,483,648`.
+
+### 2. **Common Overflow Situations**
+
+- **Addition**: Overflow occurs if the sum of two numbers exceeds the maximum value.
+- **Subtraction**: Overflow can occur if the difference is below the minimum value.
+- **Multiplication**: Overflow can occur if the product of two numbers exceeds the maximum or minimum value.
+- **Division**: Division can overflow when dividing the minimum integer value by `-1` (e.g., `-2,147,483,648 / -1` exceeds the maximum positive integer).
+
+### 3. **Overflow Checking Techniques**
+
+#### a. **Addition Overflow Check**
+
+For two integers `a` and `b`, adding them may overflow. To check for overflow before adding, use these conditions:
+
+- **Positive Overflow**: If `a > 0` and `b > 0`, then overflow occurs if `a + b > Integer.MAX_VALUE`. We can rewrite this as:
+  ```java
+  if (a > Integer.MAX_VALUE - b) {
+      // Overflow
+  }
+  ```
+
+- **Negative Overflow**: If `a < 0` and `b < 0`, overflow occurs if `a + b < Integer.MIN_VALUE`. We can rewrite this as:
+  ```java
+  if (a < Integer.MIN_VALUE - b) {
+      // Overflow
+  }
+  ```
+
+#### b. **Multiplication Overflow Check**
+
+For two integers `a` and `b`, multiplying them can overflow. The general check is to ensure the result stays within the integer bounds before the multiplication.
+
+1. **Positive Multiplication**: If both `a` and `b` are positive, overflow occurs if `a * b > Integer.MAX_VALUE`. Rewrite this to check:
+   ```java
+   if (a > Integer.MAX_VALUE / b) {
+       // Overflow
+   }
+   ```
+
+2. **Negative Multiplication**: Check if multiplying two negative values or a positive and a negative value exceeds bounds:
+   ```java
+   if (a < Integer.MIN_VALUE / b) {
+       // Overflow
+   }
+   ```
+
+#### c. **Reversing an Integer Overflow Check**
+
+When reversing an integer, you may need to multiply the reversed portion by 10 and add the last digit. To ensure this doesn't overflow:
+
+For an integer `m` and the last digit `r`:
+1. **Positive Overflow**: Check if `m * 10 + r` exceeds `Integer.MAX_VALUE` before performing the operation:
+   ```java
+   if (m > Integer.MAX_VALUE / 10 || (m == Integer.MAX_VALUE / 10 && r > 7)) {
+       // Overflow for positive numbers
+   }
+   ```
+   This is because if `m` is greater than `Integer.MAX_VALUE / 10`, then `m * 10` alone would already be too large. Additionally, if `m` equals `Integer.MAX_VALUE / 10`, adding any digit `> 7` (as `2147483647` ends in 7) would cause an overflow.
+
+2. **Negative Overflow**: Similar logic applies if you're handling negative numbers.
+
+### 4. **Practical Example for Reversing an Integer with Overflow Check**
+
+Let’s look at reversing an integer with a safe overflow check in Java:
+
+```java
+public static int reverse(int x) {
+    int reversed = 0;
+    while (x != 0) {
+        int lastDigit = x % 10;
+        
+        // Overflow check for positive numbers
+        if (reversed > Integer.MAX_VALUE / 10 || (reversed == Integer.MAX_VALUE / 10 && lastDigit > 7)) {
+            return 0; // Overflow, so return 0
+        }
+        
+        // Overflow check for negative numbers
+        if (reversed < Integer.MIN_VALUE / 10 || (reversed == Integer.MIN_VALUE / 10 && lastDigit < -8)) {
+            return 0; // Overflow, so return 0
+        }
+        
+        // Safely add lastDigit to reversed
+        reversed = reversed * 10 + lastDigit;
+        
+        x = x / 10;
+    }
+    return reversed;
+}
+```
+
+### 5. **Using Java’s `Math` Class for Safe Operations**
+
+Java's `Math` class provides `Math.addExact()`, `Math.subtractExact()`, and `Math.multiplyExact()` methods which throw an `ArithmeticException` if overflow occurs. While these methods are less efficient than direct checks, they’re useful for handling overflow safely:
+
+```java
+try {
+    int result = Math.addExact(a, b); // Throws ArithmeticException if overflow
+} catch (ArithmeticException e) {
+    System.out.println("Overflow occurred!");
+}
+```
+
+### Summary
+
+- **Addition**: Use `Integer.MAX_VALUE - b` for positive overflow, `Integer.MIN_VALUE - b` for negative.
+- **Multiplication**: Use `Integer.MAX_VALUE / b` and `Integer.MIN_VALUE / b` depending on sign.
+- **Reversing with Overflow**: Check `reversed * 10 + lastDigit` safely with maximum/minimum integer checks. 
+
+With practice, overflow checking becomes intuitive, helping you write robust code for integer operations in fixed-size types.
