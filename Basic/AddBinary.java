@@ -11,9 +11,39 @@ public class AddBinary {
         BigInteger sum = a1.add(b1);
         return sum.toString(2);
     }
+    public String addBinaryWithoutWrapperAndBigInteger(String a,String b){
+        int i = a.length()-1;
+        int j = b.length()-1;
+        int carry = 0; int base = 2;
+        StringBuilder result = new StringBuilder();
+
+        while(i>=0 || j>=0){
+            int sum= carry;
+            if(i>=0){
+                sum+=a.charAt(i)-'0';
+                i--;
+            }
+            if(j>=0){
+                sum+=b.charAt(j)-'0';
+                j--;
+            }
+            if(sum>=base){
+                carry=1;sum-=base;
+            }
+            else{
+                carry=0;
+            }
+            result.append(sum);
+        }
+        if(carry==1){
+            result.append(carry);
+        }
+        return result.reverse().toString();
+    }
     public static void main(String[] args) {
         AddBinary ob = new AddBinary();
         System.out.println(ob.addBinary("11", "1"));;
         System.out.println(ob.addBinaryBigInteger("11", "1"));;
+        System.out.println(ob.addBinaryWithoutWrapperAndBigInteger("110","101"));
     }
 }
