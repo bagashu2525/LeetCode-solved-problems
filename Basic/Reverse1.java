@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Reverse {
+public class Reverse1 {
     public static int reverse(int x) {
         int nn=x;
         int m=0;
