@@ -1,0 +1,30 @@
+🔥 Why BigInteger is Slower?
+1️⃣ BigInteger Uses Arbitrary Precision Arithmetic
+BigInteger is designed for extremely large numbers, supporting arbitrary precision.
+It doesn't use fixed-size primitive types (int, long) but instead stores numbers as arrays of digits.
+Operations like addition involve iterating over these arrays, making them slower than simple integer operations.
+
+2️⃣ Extra Overhead in Conversion
+✅ Manual Approach (Optimized):
+java
+Copy
+Edit
+int sum = carry + (a.charAt(i--) - '0') + (b.charAt(j--) - '0');
+Only integer arithmetic and character conversion are used (very fast).
+❌ BigInteger Approach:
+java
+Copy
+Edit
+BigInteger num1 = new BigInteger(a, 2);  // Binary String → BigInteger
+BigInteger num2 = new BigInteger(b, 2);
+BigInteger sum = num1.add(num2);         // BigInteger Addition
+return sum.toString(2);                  // Convert back to Binary String
+Multiple conversions:
+String → BigInteger (Parsing overhead)
+BigInteger Addition (Array-based calculation)
+BigInteger → Binary String (Conversion overhead)
+
+3️⃣ Memory and Processing Overhead
+BigInteger stores numbers as arrays of digits, not as a single integer.
+Every arithmetic operation involves creating new objects instead of modifying existing variables.
+Java's garbage collection (GC) has to clean up unused BigInteger objects, adding execution delay.
