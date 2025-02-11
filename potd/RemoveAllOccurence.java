@@ -8,7 +8,7 @@ public class RemoveAllOccurence {
             lps[0]=0;
             
             while(j<n){
-                // System.out.println("hi");
+
                 if(part.charAt(i)==part.charAt(j)){
                     lps[j]=i+1;
                     i++; j++;
@@ -37,7 +37,7 @@ public class RemoveAllOccurence {
             return sb.toString();
         }
         public static void removeOccurrences(String s, String part) {
-            int m = s.length();
+
             int n = part.length();
             int i=0,j=0;
     
@@ -46,7 +46,7 @@ public class RemoveAllOccurence {
 
             StringBuilder sb= new StringBuilder(s);
             while(i<sb.length()){
-                // System.out.println("hu");
+
                 if(sb.charAt(i)==part.charAt(j)){
                     i++;j++;
                 
