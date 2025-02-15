@@ -79,7 +79,7 @@ public class ListNode {
 
         // int r= m%10;
         // m=m/10;
-        ListNode l3 = null;
+        
         ListNode l = null;
         while (m > 0) {
             int r = m % 10;
@@ -87,7 +87,7 @@ public class ListNode {
             ListNode new1 = new ListNode(r);
             if (l == null) {
                 l = new1;
-                l3 = l;
+                
             }
             l.next = new1;
             l = l.next;
