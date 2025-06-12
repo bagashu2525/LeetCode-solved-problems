@@ -8,7 +8,37 @@ You may assume that the entire matrix is surrounded by an outer perimeter with t
 
 You must write an algorithm that runs in O(m log(n)) or O(n log(m)) time. */
 class PeakElement{
-    
+    public static int[] findPeakGrid2(int[][] mat) {
+        //solution two binary search
+        int row = mat.length;
+        int col = mat[0].length;
+        int[] arr = new int[2];
+        int low = 0, high = row - 1;
+        
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int maxColIndex = 0;
+            //finding the maximum element in the mid row
+            for (int j = 1; j < col; j++) {
+                if (mat[mid][j] > mat[mid][maxColIndex]) {
+                    maxColIndex = j;
+                }
+            }
+            
+            if ((mid == 0 || mat[mid][maxColIndex] > mat[mid - 1][maxColIndex]) &&
+                (mid == row - 1 || mat[mid][maxColIndex] > mat[mid + 1][maxColIndex])) {
+                arr[0] = mid;
+                arr[1] = maxColIndex;
+                return arr; // Found peak
+            } else if (mid > 0 && mat[mid][maxColIndex] < mat[mid - 1][maxColIndex]) {
+                high = mid - 1; // Move to upper half
+            } else {
+                low = mid + 1; // Move to lower half
+            }
+        }
+        
+        return arr; // Should not reach here
+    }
     public static int[] findPeakGrid(int[][] mat) {
         //solution one brute force
         int row = mat.length;
@@ -93,5 +123,6 @@ class PeakElement{
             {1,4},{3,2}
         };
         System.out.println(findPeakGrid(mat)[0] + " " + findPeakGrid(mat)[1]); // Output: 2 2 (or any peak element)
+        System.out.println(findPeakGrid2(mat)[0] + " " + findPeakGrid2(mat)[1]); // Output: 2 2 (or any peak element)
     }
 }
