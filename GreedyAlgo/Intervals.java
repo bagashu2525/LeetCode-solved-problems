@@ -11,6 +11,29 @@ import java.util.List;
  * Note that you don't need to modify intervals in-place. You can make a new array and return it.
  */
 public class Intervals {
+    public int[][] insert1(int[][] intervals, int[] newInterval) {
+        List<int[]> temp = new ArrayList<>();
+        int i=0,n=intervals.length;
+        //identifying the left section
+        while(i<n && intervals[i][1]<newInterval[0]){
+            temp.add(intervals[i]);
+            i++;
+            
+        }
+        //overlapping section
+        while(i<n && intervals[i][0]<=newInterval[1]){
+            newInterval[0]=Math.min(newInterval[0],intervals[i][0]);
+            newInterval[1]=Math.max(newInterval[1],intervals[i][1]);
+            i++;
+        }
+        temp.add(newInterval);
+    
+        while(i<n){
+            temp.add(intervals[i]);
+            i++;
+        }
+        return temp.toArray(new int[temp.size()][]);
+    }
     public int[][] insert(int[][] intervals, int[] newInterval) {
         List<List<Integer>> temp = new ArrayList<>();
         int i=0,n=intervals.length;
@@ -55,6 +78,11 @@ public class Intervals {
         int[][] intervals = {{1,3},{6,9}};
         int[] newInterval = {2,5};
         int[][] result = obj.insert(intervals, newInterval);
+        for (int[] interval : result) {
+            System.out.println("[" + interval[0] + ", " + interval[1] + "]");
+        }
+
+        result = obj.insert1(intervals, newInterval);
         for (int[] interval : result) {
             System.out.println("[" + interval[0] + ", " + interval[1] + "]");
         }
